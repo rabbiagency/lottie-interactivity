@@ -1,5 +1,5 @@
 {
-  "name": "@lottiefiles/lottie-interactivity",
+  "name": "@rabbiagency/lottie-interactivity",
   "description": "This is a small effects and interactivity library written to be paired with the Lottie Web Player",
   "version": "1.6.2",
   "license": "MIT",
@@ -51,18 +51,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/LottieFiles/lottie-interactivity.git"
+    "url": "git+https://github.com/rabbiagency/lottie-interactivity.git"
   },
   "author": "Jawish Hameed <jawish@lottiefiles.com>",
   "contributors": [
     "Karam Ali <karam@lottiefiles.com>"
   ],
-  "bugs": {
-    "url": "https://github.com/LottieFiles/lottie-interactivity/issues"
-  },
-  "homepage": "https://github.com/LottieFiles/lottie-interactivity#readme",
   "publishConfig": {
-    "access": "public"
+    "access": "restricted",
+    "registry": "https://npm.pkg.github.com"
   },
   "husky": {
     "hooks": {
