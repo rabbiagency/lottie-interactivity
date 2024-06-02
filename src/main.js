@@ -900,22 +900,43 @@ export class LottieInteractivity {
       // Seek: Go to a frame based on player scroll position action
       const start = action.frames[0];
       const end = action.frames.length == 2 ? action.frames[1] : (this.player.totalFrames - 1);
+      const seekToPercent = (percent) => {
+        // Use global frame reference for frames within the seek section.
+        // Without this, if you follow a seek with a loop and then scroll back up,
+        // it will treat frame numbers as relative to the loop.
+        if (this.assignedSegment !== null) {
+          this.player.resetSegments(true);
+          this.assignedSegment = null;
+        }
 
-      // Use global frame reference for frames within the seek section.
-      // Without this, if you follow a seek with a loop and then scroll back up,
-      // it will treat frame numbers as relative to the loop.
-      if (this.assignedSegment !== null) {
-        this.player.resetSegments(true);
-        this.assignedSegment = null;
+        this.player.goToAndStop(
+          start + Math.round(
+            ((percent - action.visibility[0]) / (action.visibility[1] - action.visibility[0])) *
+            (end - start)
+          ),
+          true,
+        );
       }
 
-      this.player.goToAndStop(
-        start + Math.round(
-          ((currentPercent - action.visibility[0]) / (action.visibility[1] - action.visibility[0])) *
-          (end - start)
-        ),
-        true,
-      );
+      seekToPercent(currentPercent);
+
+      // "after scroll" check, this will render the first/last frame of the segment if percent goes out of bounds,
+      // so player will not be "stuck" somewhere in the middle of the segment in case of fast scroll.
+      window.requestAnimationFrame(() => {
+        window.requestAnimationFrame(() => {
+          let currentPercent = this.getContainerVisibility();
+
+          if (currentPercent < action.visibility[0] || currentPercent > action.visibility[1]) {
+            if (currentPercent < action.visibility[0]) {
+              currentPercent = action.visibility[0];
+            } else if (currentPercent > action.visibility[1]) {
+              currentPercent = action.visibility[1];
+            }
+
+            seekToPercent(currentPercent);
+          }
+        });
+      });
     } else if (action.type === 'loop') {
       this.player.loop = true;
       // Loop: Loop a given frames
